@@ -1,0 +1,206 @@
+%%% ========================================================= %%%
+%%% Package ecol_let.sty                                      %%%
+%%% Bonenfant Christophe bonenfan@biomserv.univ-lyon1.fr      %%%
+%%% Mathieu Basille basille@biomserv.univ-lyon1.fr            %%%
+%%% 13.06.2011                                                %%%
+%%% ========================================================= %%%
+
+
+%%% Encodage et police
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\AtBeginDocument{\renewcommand\refname{\normalsize REFERENCES}}
+%%% Package divers et langue
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{color}
+\usepackage[english]{babel}
+%%% Mise en page : A4 large, numérotation de toutes les lignes, interligne double, aligné
+%%% à gauche sans justification, paragraphes indentés
+\usepackage{a4wide}
+\usepackage{lineno}
+  \pagewiselinenumbers
+  \modulolinenumbers[2]
+\usepackage{setspace}
+%%%  \doublespacing
+\usepackage[document]{ragged2e}
+  \setlength\RaggedRightParindent{\parindent}
+  \setlength\RaggedRightRightskip{0pt plus 1fil}
+%%% Style de bibliographie adapté à Ecolgy, gestion des \cite dans le texte
+\usepackage{etoolbox}
+\newbool{MyRefNumbers}
+\booltrue{MyRefNumbers}
+\usepackage{natbib}
+  \bibliographystyle{ecol_let}
+  \bibpunct{(}{)}{;}{a}{}{;}
+%%% Change police
+\usepackage{times}
+%%% For more options see the package documentation
+\usepackage{ccaption}
+  \captionnamefont{\small\sffamily\bfseries}
+  \captiontitlefont{\small}
+  \captiondelim{~}
+  \hangcaption
+  \renewcommand{\figurename}{Fig.}
+\usepackage{array}
+
+%%% Change les symboles des notes de bas de page
+\newcommand{\footnoteinfo}[2]{
+  \let\oldthefootnote\thefootnote%
+  \renewcommand{\thefootnote}{#1}%
+  \footnotetext[1]{#2}%
+  \let\thefootnote\oldthefootnote%
+}
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+%%% Quatre nouvelles commandes pour le '\maketitle' : 
+%%% '\running' : Running head
+%%% '\articletype' : type d'article en première page
+%%% '\keywordsname' : le nom de l'environnement keywords
+%%% '\contribution' : la part de boulot faites par chacun des auteurs
+\newcommand{\@articletype}{}
+\newcommand{\articletype}[1]{\renewcommand{\@articletype}{#1}}
+\newcommand{\keywordsname}{Key words}
+\newcommand{\contributionName}{Contribution}
+\newcommand{\@running}{}
+\newcommand{\running}[1]{\renewcommand{\@running}{#1}}
+\newcommand{\@shortauthors}{}
+\newcommand{\shortauthors}[1]{\renewcommand{\@shortauthors}{#1}}
+\newcommand{\@Authmail}{}
+\newcommand{\Authmail}[1]{\renewcommand{\@Authmail}{#1}}
+%%% Pour les pieds de page
+\usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \renewcommand{\headrulewidth}{0.5pt}
+  \renewcommand{\footrulewidth}{0pt}
+  \fancyhf{}
+  \fancyhead[LE,LO]{\thepage} 
+  \fancyhead[LO]{\rightmark}
+  \fancyhead[RE]{\leftmark}
+  \rhead[\sffamily\small Letter]{\sffamily\small\@running\hspace{10pt}\textbf{\thepage}}
+  \lhead[\sffamily\small\textbf{\thepage}\hspace{10pt}\@shortauthors]{\sffamily\small Letter}
+%  \chead[\small\MakeUppercase\@running]{\small\MakeUppercase\@shortauthors}
+%%% Supprime le trait des notes de bas de page
+\renewcommand{\footnoterule}{}
+
+%%% Commande '\maketitle' modifiée
+\if@compatibility
+\renewenvironment{titlepage}
+    {%
+      \if@twocolumn
+        \@restonecoltrue\onecolumn
+      \else
+        \@restonecolfalse\newpage
+      \fi
+      \thispagestyle{empty}%
+      \setcounter{page}\z@
+    }%
+    {\if@restonecol\twocolumn \else \fi
+    }
+\else
+\renewenvironment{titlepage}
+    {%
+      \if@twocolumn
+        \@restonecoltrue\onecolumn
+      \else
+        \@restonecolfalse\newpage
+      \fi
+      \thispagestyle{empty}%
+      \setcounter{page}\@ne
+    }%
+    {\if@restonecol\twocolumn \else \fi
+     \if@twoside\else
+        \setcounter{page}\@ne
+     \fi
+    }
+\fi
+
+\renewcommand\maketitle{\begin{titlepage}%
+\let\footnotesize\small
+\let\footnoterule\relax
+\let \footnote \thanks
+\vskip 5pt%
+\normalfont\normalsize
+\begin{raggedright}%
+  {\bfseries\Large\textsf \@title \par}%
+\end{raggedright}\par
+  \vskip 15pt%
+  {\normalsize\parbox{\linewidth}{
+    \begin{tabular}[t]{c}%
+      \sffamily\@author
+    \end{tabular}}\par}%
+\@thanks
+\normalsize
+\vskip 15pt
+\end{titlepage}%
+\global\let\thanks\relax
+\global\let\maketitle\relax
+\global\let\@thanks\@empty
+\global\let\@author\@empty
+\global\let\@date\@empty
+\global\let\@title\@empty
+\global\let\title\relax
+\global\let\author\relax
+\global\let\date\relax
+\global\let\and\relax
+\thispagestyle{plain}
+}
+
+%%% Pour la gestion des auteurs/affiliations (bricolage, je n'arrive pas à intégrer
+%%% correctement les commandes du paquets pour faire le même travail.
+\usepackage{authblk}
+%\setlength{\affilsep}{10pt}
+%\renewcommand\Authfont{\noindent\RaggedRight\bfseries}
+%\renewcommand\Affilfont{\noindent\RaggedRight\mdseries\itshape\footnotesize}
+%\renewcommand\AB@authnote[1]{}
+%\renewcommand\AB@affilnote[1]{}
+
+%%% Environnement 'abstract' dans le style du journal
+\renewenvironment{abstract}{%
+%  \quotation
+  {\noindent\bfseries\textsf\abstractname\\
+    \noindent}%
+  }
+%{\endquotation}
+
+%%% Environnement 'keywords' dans le style du journal
+\newenvironment{keywords}{%
+%  \quotation
+  \vspace{15pt}
+  {\noindent\bfseries\textsf\keywordsname\\
+    \noindent}%
+}
+%{\endquotation}
+
+%%% Environnement 'contribution' dans le style du journal
+\newenvironment{contribution}{%
+%  \quotation
+  \vspace{15pt}
+  {\noindent\bfseries\textsf\contributionName\\
+    \noindent}%
+}
+%{\endquotation}
+
+
+%%% Environnement 'thebibliography' en \small
+\let\orig@thebibliography\thebibliography
+\let\endorig@thebibliography\endthebibliography
+\renewenvironment*{thebibliography}
+{\small%
+ \orig@thebibliography}%
+{\endorig@thebibliography}
+
+%%% Style des titres (pas de numérotation, utiliser \section*
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus.2ex}%
+  {\sffamily\bfseries\uppercase}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\sffamily\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\itshape\normalsize}}
+
